@@ -10,7 +10,8 @@ rule proteom_preclustering:
         """
 
 rule proteom_annotations:
-    input : aas = "{base}/{taxononomy}/{taxon}.preclustering.faa",
+    input : gids = "{base}/{taxononomy}/{taxon}.gids",
+            aas = "{base}/{taxononomy}/{taxon}.preclustering.faa",
             preclusters = "{base}/{taxononomy}/{taxon}.preclustering"
     output : emap_out = "{base}/{taxononomy}/{taxon}.emapper"
     params : script = "workflow/scripts/proteom_annotations.py"

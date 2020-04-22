@@ -29,6 +29,7 @@ call(exec, shell = True)
 
 with open(representatives + ".clstr") as handle:
     clusters = "\n".join(handle.readlines()).split("Cluster ")
+os.remove(representatives + ".clstr")
 
 clusters = [c.split("\n\n")[1:-1] for c in clusters[1:-1]]
 clusters = [[cc.split(">")[1].split("... ") for cc in c] for c in clusters]
