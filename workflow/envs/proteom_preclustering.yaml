@@ -1,0 +1,9 @@
+name: proteom_preclustering
+channels:
+  - bioconda
+  - defaults
+  - conda-forge
+dependencies:
+  - cd-hit=4.8.1=hdbcaa40_0
+  - python=3.6
+

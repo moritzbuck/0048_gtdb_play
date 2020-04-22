@@ -1,5 +1,6 @@
 import sys
 from subprocess import call
+import os
 from os.path import join as pjoin
 import gzip
 
