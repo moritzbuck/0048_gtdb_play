@@ -116,8 +116,8 @@ for gid, taxo in tqdm(metadata.gtdb_taxonomy.iteritems()):
         pats += [gfold]
         taxo_path = "root/" + taxo.replace(";", "/")
         os.makedirs(taxo_path , exist_ok= True)
-        if not os.path.exists(pjoin(taxo_path, gid)):
-            os.symlink(gfold, pjoin(taxo_path, gid))
+        if not os.path.exists(pjoin(taxo_path, rename.get(gid, gid))):
+            os.symlink(gfold, pjoin(taxo_path, rename.get(gid, gid)))
 
 def make_gid_files(clade = "root", folder = "root"):
     subclades = [f for f in os.listdir(folder) if os.path.isdir(pjoin(folder, f)) and f[1:3] == "__"]
@@ -126,7 +126,7 @@ def make_gid_files(clade = "root", folder = "root"):
         for f in subclades:
             gids.update(make_gid_files(f, pjoin(folder, f)))
     else :
-        gids = {f for f in os.listdir(folder) if f in metadata.index or f in rename.values()}
+        gids = {rename.get(f,f) for f in os.listdir(folder) if f in metadata.index or f in rename.values()}
 
     if os.path.exists(pjoin(folder, clade + ".gids")) :
         with open(pjoin(folder, clade + ".gids")) as handle:
