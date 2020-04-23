@@ -42,4 +42,4 @@ for f in proteoms:
         lines = [l.decode() for l in handle.readlines()]
     gid_annot = {l.split()[0][1:] : annotations.get(l.split()[0][1:], None) for l in lines if l.startswith(">")}
     with open(pjoin(fold, gid + ".emapper"), "w") as handle:
-        json.dump(gid_annot, handle)
+        json.dump(gid_annot, handle, indent=4, sort_keys=True)

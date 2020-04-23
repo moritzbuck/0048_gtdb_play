@@ -24,7 +24,7 @@ silix <(unpigz -c {faa}) {hits} >  {clust_file}
 call(exec, shell = True)
 
 with open(silix_clusts) as handle:
-    silix_clusts = { l.strip().split("\t")[1] : l.split("\t")[0] for l in handle.readlines()}
+    silix_out = { l.strip().split("\t")[1] : l.split("\t")[0] for l in handle.readlines()}
 
 with open(clusters_file) as handle:
     preclusters = {ll : l.split()[0] for l in handle for ll in l.strip().split()[1:]}
@@ -42,11 +42,11 @@ for f in proteoms:
     gid = os.path.basename(fold)
     with gzip.open(f) as handle:
         lines = [l.decode() for l in handle.readlines()]
-    gid_annot[f] = {l.split()[0][1:] : 'g__TMED189' + "_silix_COG_" + silix_clusts[l.split()[0][1:]] for l in lines if l.startswith(">")}
-    gid2cogs[os.path.basename(f)[:-7]] = set(gid_annot[f].values())
+    gid_annot[os.path.basename(f)[:-7]] = {l.split()[0][1:] : 'g__TMED189' + "_silix_COG_" + silix_out[l.split()[0][1:]] for l in lines if l.startswith(">")}
+    gid2cogs[os.path.basename(f)[:-7]] = list(set(gid_annot[os.path.basename(f)[:-7]].values()))
 
 with open(silix_clusts, "w") as handle:
-    json.dump(gid_annot, handle)
+    json.dump(gid_annot, handle, indent=4, sort_keys=True)
 
 with open(silix_clusts + ".gid2cog", "w") as handle:
-    json.dump(gid_annot, handle)
+    json.dump(gid2cogs, handle, indent=4, sort_keys=True)
