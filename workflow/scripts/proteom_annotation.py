@@ -24,10 +24,10 @@ with open(emap_out) as handle:
     l = handle.readline()
     l = handle.readline()
     header = handle.readline()[1:-1].split("\t")
-    annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in handle.readlines()}
+    annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in tqdm(handle.readlines())}
 
 with open(clusters_file) as handle:
-    preclusters = {ll : l.split()[0] for l in handle for ll in l.strip().split()[1:]}
+    preclusters = {ll : l.split()[0] for l in tqdm(handle) for ll in l.strip().split()[1:]}
 
 proteoms = []
 for v in os.walk(clade_folder):
