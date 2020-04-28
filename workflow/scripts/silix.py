@@ -16,9 +16,9 @@ clade = os.path.basename(gid_file)[:-3]
 hits_file = silix_clusts.replace("silix.clusters", "selfhits")
 
 exec = """
+unpigz {faa}
 diamond makedb --db {faa} --in {faa}
 diamond blastp --more-sensitive  -e0.001  -p {threads} -f 6 -q {faa} --db {faa} -o {hits}
-unpigz {faa}
 silix {faa_minusgz} {hits} >  {clust_file}
 pigz {faa}
 """.format(faa = full_proteom, faa_minusgz = full_proteom[:-3], clust_file = silix_clusts, threads = threads, hits = hits_file)
