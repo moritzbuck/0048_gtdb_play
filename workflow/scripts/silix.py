@@ -18,8 +18,10 @@ hits_file = silix_clusts.replace("silix.clusters", "selfhits")
 exec = """
 diamond makedb --db {faa} --in {faa}
 diamond blastp --more-sensitive  -e0.001  -p {threads} -f 6 -q {faa} --db {faa} -o {hits}
-silix <(unpigz -c {faa}) {hits} >  {clust_file}
-""".format(faa = full_proteom, clust_file = silix_clusts, threads = threads, hits = hits_file)
+unpigz {faa}
+silix {faa_minusgz} {hits} >  {clust_file}
+pigz {faa}
+""".format(faa = full_proteom, faa_minusgz = full_proteom[:-3], clust_file = silix_clusts, threads = threads, hits = hits_file)
 
 call(exec, shell = True)
 
