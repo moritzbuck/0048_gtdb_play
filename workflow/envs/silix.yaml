@@ -1,0 +1,6 @@
+name: silix
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - diamond=0.9.14=hd28b015_2
