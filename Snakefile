@@ -7,9 +7,9 @@ clades = list(zip(*glob_wildcards("/home/moritz/data/gtdb/root/d__{dom}/p__{phyl
 
 prefixes = ("d__","p__","c__","o__","f__","g__", "s__")
 
-genuses = {root + "/".join([p + cc for p,cc in zip(prefixes,c)][0:6])  for c in clades} 
+genuses = {root + "/".join([p + cc for p,cc in zip(prefixes,c)][0:6])  for c in clades}
 
 print("#We have ", len(genuses), " for ", len(clades), " genomes")
 
-rule all : 
-    input : [g + "/" + os.path.basename(g) + ".emapper" for g in genuses] 
+rule all :
+    input : [g + "/" + os.path.basename(g) + ff for g in genuses for ff in [".silix.clusters", ".emapper"]]

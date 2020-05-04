@@ -21,19 +21,21 @@ with gzip.open(full_proteom, "w") as full_p_handle:
     for p in proteoms:
         with gzip.open(p) as prot_handle:
                 prots = prot_handle.readlines()
+                if len(prots) >0 and len(prots[-1]) >0 and  prots[-1][-1] != b'\n':
+                    prots[-1]+= b"\n"
         full_p_handle.writelines(prots)
 
-exec = "cd-hit -i {input} -o {output} -c 0.99 -M 0 -T {threads} -d 0 -s 0.99".format(input = full_proteom, output = representatives, threads = threads)
+exec = "cd-hit -i {input} -o {output} -c 0.95 -M 0 -T {threads} -d 0 -s 0.95".format(input = full_proteom, output = representatives, threads = threads)
 
 call(exec, shell = True)
 
 with open(representatives + ".clstr") as handle:
     clusters = "\n".join(handle.readlines()).split("Cluster ")
-os.remove(representatives + ".clstr")
+    #os.remove(representatives + ".clstr")
 
-clusters = [c.split("\n\n")[1:-1] for c in clusters[1:-1]]
-clusters = [[cc.split(">")[1].split("... ") for cc in c] for c in clusters]
-clusters = {[cc[0] for cc in c if cc[1] == "*"][0] : [cc[0] for cc in c] for c in clusters}
+clusters = [c.split("\n\n") for c in clusters[1:] if "*" in c]
+clusters = [[cc.split(">")[1].split("... ") for cc in c if ">" in cc and cc != ">"] for c in clusters ]
+clusters = {[cc[0] for cc in c if cc[1] == "*" or cc[1] == "*\n"][0] : [cc[0] for cc in c] for c in clusters}
 
 with open(clusters_file, "w") as handle:
     handle.writelines(["\t".join([k] + v) + "\n" for k, v in clusters.items()])

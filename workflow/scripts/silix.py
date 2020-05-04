@@ -12,16 +12,14 @@ clade_folder = os.path.dirname(gid_file)
 with open(gid_file) as gids_handle:
     gids = {k.strip() for k in gids_handle}
 
-clade = os.path.basename(gid_file)[:-3]
+clade = os.path.basename(gid_file)[:-5]
 hits_file = silix_clusts.replace("silix.clusters", "selfhits")
 
 exec = """
-unpigz {faa}
 diamond makedb --db {faa} --in {faa}
 diamond blastp --more-sensitive  -e0.001  -p {threads} -f 6 -q {faa} --db {faa} -o {hits}
-silix {faa_minusgz} {hits} >  {clust_file}
-pigz {faa}
-""".format(faa = full_proteom, faa_minusgz = full_proteom[:-3], clust_file = silix_clusts, threads = threads, hits = hits_file)
+silix {faa} {hits} >  {clust_file}
+""".format(faa = full_proteom, clust_file = silix_clusts, threads = threads, hits = hits_file)
 
 call(exec, shell = True)
 
@@ -44,7 +42,7 @@ for f in proteoms:
     gid = os.path.basename(fold)
     with gzip.open(f) as handle:
         lines = [l.decode() for l in handle.readlines()]
-    gid_annot[os.path.basename(f)[:-7]] = {l.split()[0][1:] : 'g__TMED189' + "_silix_COG_" + silix_out[l.split()[0][1:]] for l in lines if l.startswith(">")}
+    gid_annot[os.path.basename(f)[:-7]] = {l.split()[0][1:] : clade + "_silix_COG_" + silix_out[preclusters[l.split()[0][1:]]] for l in lines if l.startswith(">")}
     gid2cogs[os.path.basename(f)[:-7]] = list(set(gid_annot[os.path.basename(f)[:-7]].values()))
 
 with open(silix_clusts, "w") as handle:

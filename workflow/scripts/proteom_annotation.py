@@ -24,10 +24,10 @@ with open(emap_out) as handle:
     l = handle.readline()
     l = handle.readline()
     header = handle.readline()[1:-1].split("\t")
-    annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in tqdm(handle.readlines())}
+    annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in handle.readlines()}
 
 with open(clusters_file) as handle:
-    preclusters = {ll : l.split()[0] for l in tqdm(handle) for ll in l.strip().split()[1:]}
+    preclusters = {ll : l.split()[0] for l in handle for ll in l.strip().split()[1:]}
 
 proteoms = []
 for v in os.walk(clade_folder):
@@ -40,6 +40,6 @@ for f in proteoms:
     gid = os.path.basename(fold)
     with gzip.open(f) as handle:
         lines = [l.decode() for l in handle.readlines()]
-    gid_annot = {l.split()[0][1:] : annotations.get(l.split()[0][1:], None) for l in lines if l.startswith(">")}
+    gid_annot = {l.split()[0][1:] : annotations.get(preclusters[l.split()[0][1:]], None) for l in lines if l.startswith(">")}
     with open(pjoin(fold, gid + ".emapper"), "w") as handle:
         json.dump(gid_annot, handle, indent=4, sort_keys=True)
