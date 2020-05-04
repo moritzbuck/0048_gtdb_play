@@ -27,7 +27,8 @@ with open(emap_out) as handle:
     annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in handle.readlines()}
 
 with open(clusters_file) as handle:
-    preclusters = {ll : l.split()[0] for l in handle for ll in l.strip().split()[1:]}
+    derep2clusters = {l.split()[0] : l[:-1].split()[1:] for l in handle}
+preclusters = {vv : k for k,v in tqdm(derep2cluster.items()) for vv in v} 
 
 proteoms = []
 for v in os.walk(clade_folder):
