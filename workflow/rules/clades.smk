@@ -29,7 +29,7 @@ rule proteom_annotation:
     output : emap_out = "{base}/{taxononomy}/{taxon}.emapper"
     params : script = "workflow/scripts/proteom_annotation.py"
     conda : "../envs/proteom_annotation.yaml"
-    threads : 12
+    threads : 24
     shell : """
         python3 {params.script} {input.gids} {input.aas} {input.preclusters} {output.emap_out} {threads}
         """

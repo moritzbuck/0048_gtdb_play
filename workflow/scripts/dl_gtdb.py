@@ -37,7 +37,7 @@ def process_gid(gid):
 
 
 base = "/home/moritz/data/gtdb"
-metadata = pandas.concat([pandas.read_csv("bac120_metadata_r89.tsv", sep="\t", index_col=0, low_memory=False), pandas.read_csv("ar122_metadata_r89.tsv", sep="\t", index_col=0, low_memory=False)])
+metadata = pandas.concat([pandas.read_csv(pjoin(base,"bac120_metadata_r95.tsv"), sep="\t", index_col=0, low_memory=False), pandas.read_csv(pjoin(base,"ar122_metadata_r95.tsv"), sep="\t", index_col=0, low_memory=False)])
 uba_folder = pjoin(base, "UBAs")
 others_folder = pjoin(base, "RS_nd_GBs")
 
@@ -60,7 +60,7 @@ for t in ["refseq", "genbank"]:
 there = []
 for f in tqdm(metadata.index):
     if not f.startswith("UBA"):
-        f = rename.get(f, f)
+#        f = rename.get(f, f)
         raw_dled = pjoin(make_folder(f), f)
         if os.path.exists(raw_dled):
             ass = [f for f in os.listdir(raw_dled) if f.endswith("fna.gz")]
@@ -91,9 +91,9 @@ rename['GCA_003312605.1'] = 'GCA_003312605.3'
 rename['GCA_002872495.1'] = 'GCA_002872495.3'
 
 with open(pjoin(base, "genbamk_ids.txt"), "w") as handle :
-    handle.writelines([k + "\n" for k in to_fix if k.startswith("GCA_")] )
+    handle.writelines([k + "\n" for k in metadata.index if k.startswith("GCA_")] )
 with open(pjoin(base, "refsecks_ids.txt"), "w") as handle :
-    handle.writelines([k + "\n" for k in to_fix if k.startswith("GCF_")] )
+    handle.writelines([k + "\n" for k in metadata.index  if k.startswith("GCF_")] )
 
 call("ncbi-genome-download -p 24  --format fasta -A genbamk_ids.txt -s genbank all")
 call("ncbi-genome-download -p 24  --format fasta -A refsecks_ids.txt -s refseq all")

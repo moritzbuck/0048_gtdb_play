@@ -6,4 +6,4 @@ channels:
 dependencies:
   - cd-hit=4.8.1=hdbcaa40_0
   - python=3.6
-
+  - tqdm

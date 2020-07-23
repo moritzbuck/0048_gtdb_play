@@ -12,4 +12,4 @@ genuses = {root + "/".join([p + cc for p,cc in zip(prefixes,c)][0:6])  for c in 
 print("#We have ", len(genuses), " for ", len(clades), " genomes")
 
 rule all :
-    input : [g + "/" + os.path.basename(g) + ff for g in genuses for ff in [".silix.clusters", ".emapper"]]
+    input : [g + "/" + os.path.basename(g) + ff for ff in [ ".emapper"] for g in genuses]
