@@ -33,3 +33,25 @@ rule proteom_annotation:
     shell : """
         python3 {params.script} {input.gids} {input.aas} {input.preclusters} {output.emap_out} {threads}
         """
+
+rule motupan_COGs:
+    input :  gids = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.gids",
+             silix_clusts = "{base}/{taxononomy}/g__{genus}/g__{genus}.silix.clusters"
+    output : motupan_out = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.abinitio.motupan.json"
+    params : script = "workflow/scripts/motupan.py", checkm_file = "data/checkm_file.txt"
+    conda : "../envs/motulizer.yaml"
+    threads : 1
+    shell : """
+        python3 '{params.script}' '{input.gids}' '{input.silix_clusts}' '{output.motupan_out}' '{params.checkm_file}'
+        """
+
+rule motupan_emapper:
+    input :  gids = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.gids",
+             emapper_results = "{base}/{taxononomy}/g__{genus}/g__{genus}.emapper"
+    output : motupan_out = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.emapper.motupan.json"
+    params : script = "workflow/scripts/emap_motupan.py", checkm_file = "data/checkm_file.txt"
+    conda : "../envs/motulizer.yaml"
+    threads : 1
+    shell : """
+        python3 '{params.script}' '{input.gids}' '{input.emapper_results}' '{output.motupan_out}' '{params.checkm_file}'
+        """

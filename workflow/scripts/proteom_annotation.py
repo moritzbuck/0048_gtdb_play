@@ -17,7 +17,7 @@ with open(gid_file) as gids_handle:
     gids = {k.strip() for k in gids_handle}
 
 print("running emapper on preclusters")
-    
+
 exec = "emapper.py  -i {input}  -o {output} --cpu {threads}  -m diamond  >> {log} 2>&1".format(input = full_proteom, output = emap_out, threads = threads, log = log_file)
 
 call(exec, shell = True)
@@ -35,25 +35,25 @@ with open(emap_out) as handle:
     annotations = {l.split("\t")[0] : {ll[0] : ll[1] for ll in zip(header[1:], l.split("\t")[1:]) } for l in handle.readlines()}
 
 print("parsing preclusters")
-    
+
 with open(clusters_file) as handle:
     derep2clusters = {l.split()[0] : l[:-1].split()[1:] for l in handle}
-preclusters = {vv : k for k,v in derep2clusters.items() for vv in v} 
+preclusters = {vv : k for k,v in derep2clusters.items() for vv in v}
 
 
 proteoms = []
-for v in os.walk(clade_folder):
+for v in os.walk(clade_folder, followlinks=True):
     for vv in v[1]:
         if vv in gids:
             proteoms += [pjoin(v[0], vv, vv + ".faa.gz")]
 
-print("parsing", len(proteoms), "proteoms and attributing annotations")        
-            
+print("parsing", len(proteoms), "proteoms and attributing annotations")
+
 for f in proteoms:
     fold = os.path.dirname(f)
     gid = os.path.basename(fold)
     with gzip.open(f) as handle:
         lines = [l.decode() for l in handle.readlines()]
-    gid_annot = {l.split()[0][1:] : annotations.get(preclusters[l.split()[0][1:]], None) for l in lines if l.startswith(">")}
+    gid_annot = {l.split()[0][1:] : annotations.get(preclusters[l.split()[0][1:]], None) for l in lines if l.startswith(">") and l.split()[0][1:] in preclusters}
     with open(pjoin(fold, gid + ".emapper"), "w") as handle:
         json.dump(gid_annot, handle, indent=4, sort_keys=True)

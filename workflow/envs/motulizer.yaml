@@ -1,6 +1,8 @@
-name: silix
+name: motupan
 channels:
   - bioconda
   - defaults
+  - etetoolkit
 dependencies:
-  - diamond=0.9.14=hd28b015_2
+  - tqdm
+  - ete3

@@ -1,0 +1,15 @@
+name: python_std
+channels:
+  - etetoolkit
+  - conda-forge
+  - bioconda
+  - defaults
+  - anaconda
+dependencies:
+  - biopython
+  - ete3
+  - numpy
+  - pandas
+  - scipy
+  - tqdm
+  - numpy

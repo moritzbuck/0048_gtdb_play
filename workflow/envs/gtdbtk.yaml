@@ -1,0 +1,11 @@
+name: python_std
+channels:
+  - defaults
+  - bioconda
+  - etetoolkit
+dependencies:
+  - python=3.6
+  - prodigal
+  - hmmer
+  - fasttree
+  - ete3

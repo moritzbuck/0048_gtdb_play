@@ -14,7 +14,7 @@ with open(gid_file) as gids_handle:
 print("preculstering", gid_file)
 
 proteoms = []
-for v in os.walk(clade_folder):
+for v in os.walk(clade_folder, followlinks=True):
     for vv in v[1]:
         if vv in gids:
             proteoms += [pjoin(v[0], vv, vv + ".faa.gz")]

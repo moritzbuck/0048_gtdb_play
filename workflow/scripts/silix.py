@@ -41,7 +41,7 @@ preclusters = {vv : k for k,v in derep2clusters.items() for vv in v}
 
 
 proteoms = []
-for v in os.walk(clade_folder):
+for v in os.walk(clade_folder, followlinks=True):
     for vv in v[1]:
         if vv in gids:
             proteoms += [pjoin(v[0], vv, vv + ".faa.gz")]
@@ -54,9 +54,16 @@ for f in proteoms:
     gid = os.path.basename(fold)
     with gzip.open(f) as handle:
         lines = [l.decode() for l in handle.readlines()]
-    gid_annot[os.path.basename(f)[:-7]] = {l.split()[0][1:] : clade + "_silix_COG_" + silix_out[preclusters[l.split()[0][1:]]] for l in lines if l.startswith(">")}
-    gid2cogs[os.path.basename(f)[:-7]] = list(set(gid_annot[os.path.basename(f)[:-7]].values()))
-
+    gid_annot[os.path.basename(f)[:-7]] = {}
+    gid2cogs[os.path.basename(f)[:-7]] = {}
+    for l in lines:
+        if l.startswith(">"):
+            if  l.split()[0][1:] in preclusters:
+                gid_annot[os.path.basename(f)[:-7]][l.split()[0][1:]] = clade + "_silix_COG_" + silix_out[preclusters[l.split()[0][1:]]]
+            else :
+                print("AA-seq {} not in the preculstering, check if is something bigger ...".format(l.split()[0][1:]))
+                print("AA-seq {} not in the preculstering, check if is something bigger ...".format(l.split()[0][1:]), file=sys.stderr)
+        gid2cogs[os.path.basename(f)[:-7]] = list(set(gid_annot[os.path.basename(f)[:-7]].values()))
 print("dump stuff")
 
 with open(silix_clusts, "w") as handle:

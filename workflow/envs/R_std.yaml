@@ -1,0 +1,9 @@
+name: python_std
+channels:
+  - defaults
+  - ccb-sb
+dependencies:
+  - R
+  - R-ggplot2
+  - R-data.table
+  - r-hues
