@@ -2,8 +2,11 @@ name: python_std
 channels:
   - defaults
   - ccb-sb
+  - conda-forge
 dependencies:
   - R
   - R-ggplot2
   - R-data.table
+  - R-vegan
   - r-hues
+  - r-showtext

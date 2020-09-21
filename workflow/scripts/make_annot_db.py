@@ -80,7 +80,7 @@ for genus in tqdm(abinit_outs):
 
 out_root = os.path.dirname(out_db)
 def write_out_file(dicto, type, trait):
-    with open(pjoin(out_root, "{}-{}.json".format(type,trait)), "w") as handle:
+    with open(pjoin(out_root, "{}-{}.json".format(trait,type)), "w") as handle:
         json.dump(dicto, handle, indent=4, sort_keys=True)
 
 annot_dict = defaultdict(lambda : {})

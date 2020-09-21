@@ -16,11 +16,11 @@ def count_genomes(taxo):
     gid_file = path +  "/" + path.split("/")[-1] + ".gids"
     with open(gid_file) as handle:
         return len(handle.readlines())
-good_species = [s for s in species if count_genomes(s) > 9 ]
+good_species = [s for s in species if count_genomes(s) > 5 ]
 
 
 species = list({root + "/".join([p + cc for p,cc in zip(prefixes,c)][0:7])  for c in good_species})
 genuses = list({root + "/".join([p + cc for p,cc in zip(prefixes,c)][0:6])  for c in good_species})
 
 rule all :
-    input : [g + "/" + os.path.basename(g) +  ".emapmotupan.json" for g in species]
+    input : [g + "/" + os.path.basename(g) +  ".ab_initio.motupan.json" for g in species]

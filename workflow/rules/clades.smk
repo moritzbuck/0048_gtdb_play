@@ -37,7 +37,7 @@ rule proteom_annotation:
 rule motupan_COGs:
     input :  gids = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.gids",
              silix_clusts = "{base}/{taxononomy}/g__{genus}/g__{genus}.silix.clusters"
-    output : motupan_out = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.abinitio.motupan.json"
+    output : motupan_out = "{base}/{taxononomy}/g__{genus}/s__{species}/s__{species}.ab_initio.motupan.json"
     params : script = "workflow/scripts/motupan.py", checkm_file = "data/checkm_file.txt"
     conda : "../envs/motulizer.yaml"
     threads : 1

@@ -28,13 +28,14 @@ rule anot_matrices:
 
 rule figs:
     input : bmft = "{base}/analyses/{tax_level}/{traits}/master_table.csv",
-            pairs = "{base}/analyses/{tax_level}/{traits}/pairs_table.csv"
+            pairs = "{base}/analyses/{tax_level}/{traits}/pairs_table.csv",
+            cogcats = "{base}/analyses/{tax_level}/{traits}/annotations/cogcat.csv"
     output : fig1 = "{base}/analyses/{tax_level}/{traits}/plots/Fig1.pdf"
     params : script = "workflow/scripts/figs.R"
     conda : "../envs/R_std.yaml"
     threads : 1
     shell : """
-        Rscript {params.script} {input.bmft} {input.pairs} {output.fig1} {wildcards.tax_level} {wildcards.traits}
+        Rscript {params.script} {input.bmft} {input.pairs} {input.cogcats} {output.fig1} {wildcards.tax_level} {wildcards.traits}
         """
 
 rule gtdbtk_tree:

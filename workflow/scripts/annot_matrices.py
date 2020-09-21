@@ -29,11 +29,11 @@ def cog_set_annot(cogs, typ):
 
 for typ in ['cogcat', 'KO', 'EC', "CAZy"]:
     print("Processing", typ)
-    with open(annot_db_json.replace('-cogcat.json','-' + typ + ".json")) as handle:
+    with open(annot_db_json.replace('cogcat',typ)) as handle:
         annot_db = json.load(handle)
     tables = {}
     for k,v in tqdm(db.items()):
         tables[k + ":accesorry" ] =  cog_set_annot(v['aux_genome'], typ)
         tables[k + ":core" ] =  cog_set_annot(v['core'], typ)
     out_table = pandas.DataFrame.from_dict({k : v for k,v in tables.items() if v}, orient = 'index').fillna(0)
-    out_table.to_csv(cogcat_table.replace("cogcat.csv", typ + ".csv"))
+    out_table.to_csv(cogcat_table.replace("cogcat", typ.lower()))

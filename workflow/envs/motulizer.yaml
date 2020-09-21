@@ -6,3 +6,4 @@ channels:
 dependencies:
   - tqdm
   - ete3
+  - numpy

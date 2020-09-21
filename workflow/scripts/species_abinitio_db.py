@@ -12,7 +12,7 @@ prefix = ['d__', 'p__', 'c__', 'o__', 'f__', 'g__', 's__']
 level2pref = {k :v for k,v in zip(level, prefix)}
 
 motupan_outs = []
-for v in tqdm(os.walk(out_db.split("dbs/")[0] + "root"), followlinks=True):
+for v in tqdm(os.walk(out_db.split("dbs/")[0] + "root", followlinks=True)):
     for vv in v[2]:
         if vv.endswith(trait + ".motupan.json") and vv.startswith(level2pref[tax_level]):
             motupan_outs += [pjoin(v[0], vv)]
@@ -48,35 +48,36 @@ for p in tqdm(motupan_outs):
     with open(p) as handle:
         tt = json.load(handle)
     idd =  list(tt.keys())[0]
-    tt[idd]['taxonomy'] = os.path.dirname(p.split("root/")[1]).replace("/",";")
-#    tt[idd]['cog_composition'] = {g['name'] : gid2cogs[g['name']] for g in tt[idd]['genomes']}
-    core = set(tt[idd]['core'])
-    accessory = set(tt[idd]['aux_genome'])
-    singles = set(tt[idd]['singleton_cogs'])
-    mg_info = {g['name'] : {"completeness" : g['checkm_complet'],"contamination" : g['checkm_contamin']} for g in tt[idd]['genomes']}
+    if idd not in database:
+        tt[idd]['taxonomy'] = os.path.dirname(p.split("root/")[1]).replace("/",";")
+    #    tt[idd]['cog_composition'] = {g['name'] : gid2cogs[g['name']] for g in tt[idd]['genomes']}
+        core = set(tt[idd]['core'])
+        accessory = set(tt[idd]['aux_genome'])
+        singles = set(tt[idd]['singleton_cogs'])
+        mg_info = {g['name'] : {"completeness" : g['checkm_complet'],"contamination" : g['checkm_contamin']} for g in tt[idd]['genomes']}
 
-    if trait == "ab_initio":
-        tt[idd]['cogs'] ={}
-
-    tt[idd]['rep_genome'] = find_rep(mg_info)
-    for g in tt[idd]['genomes']:
-        gid = g['name']
         if trait == "ab_initio":
-            tt[idd]['cogs'][gid] = gid2cogs[gid]
-        if os.path.exists(pjoin(os.path.dirname(p), gid,gid + ".fna.gz" )):
-            with gzip.open(pjoin(os.path.dirname(p), gid,gid + ".fna.gz" )) as handle:
-                ls = [l.decode()[:-1] for l in handle]
-            counts = [ (len(l), l.count("G") + l.count("C")) for l in ls if l[0] != ">"]
-            g['genome_len'] = sum([l[0] for l in counts])
-            g['GC'] = sum([l[1] for l in counts])/g['genome_len']
-        g['total_cogs'] = len(tt[idd]['cogs'][gid])
-        g['acc_cogs_count'] = len(accessory.intersection(tt[idd]['cogs'][gid]))
-        g['single_cogs_count'] = len(singles.intersection(tt[idd]['cogs'][gid]))
-        g['varfract'] =  g['acc_cogs_count']/g['total_cogs'] if g['total_cogs'] > 0 else None
-        if  g['total_cogs'] == 0 :
-            print(gid,"of taxonomy",tt[idd]['taxonomy'], "has no proteins...")
-            tt[idd]['contains_broken_proteoms'] = 1
-    database.update(tt)
+            tt[idd]['cogs'] ={}
+
+        tt[idd]['rep_genome'] = find_rep(mg_info)
+        for g in tt[idd]['genomes']:
+            gid = g['name']
+            if trait == "ab_initio":
+                tt[idd]['cogs'][gid] = gid2cogs[gid]
+            if os.path.exists(pjoin(os.path.dirname(p), gid,gid + ".fna.gz" )):
+                with gzip.open(pjoin(os.path.dirname(p), gid,gid + ".fna.gz" )) as handle:
+                    ls = [l.decode()[:-1] for l in handle]
+                counts = [ (len(l), l.count("G") + l.count("C")) for l in ls if l[0] != ">"]
+                g['genome_len'] = sum([l[0] for l in counts])
+                g['GC'] = sum([l[1] for l in counts])/g['genome_len']
+            g['total_cogs'] = len(tt[idd]['cogs'][gid])
+            g['acc_cogs_count'] = len(accessory.intersection(tt[idd]['cogs'][gid]))
+            g['single_cogs_count'] = len(singles.intersection(tt[idd]['cogs'][gid]))
+            g['varfract'] =  g['acc_cogs_count']/g['total_cogs'] if g['total_cogs'] > 0 else None
+            if  g['total_cogs'] == 0 :
+                print(gid,"of taxonomy",tt[idd]['taxonomy'], "has no proteins...")
+                tt[idd]['contains_broken_proteoms'] = 1
+        database.update(tt)
 
 with open(out_db, "w") as handle:
     json.dump(database, handle, indent=4, sort_keys=True)

@@ -12,7 +12,7 @@ def count_genomes(taxo):
     gid_file = path +  "/" + path.split("/")[-1] + ".gids"
     with open(gid_file) as handle:
         return len(handle.readlines())
-good_species = [s for s in species if count_genomes(s) > 9 ]
+good_species = [s for s in species if count_genomes(s) > 5 ]
 
 
 species = list({"{base}/root/" + "/".join([p + cc for p,cc in zip(prefixes,c)][0:7])  for c in good_species})
